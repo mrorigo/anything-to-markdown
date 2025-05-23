@@ -1,0 +1,47 @@
+{
+  "name": "markdown-converter-ts",
+  "version": "1.0.0",
+  "description": "TypeScript port of markdown converter for text, HTML, YouTube and Wikipedia content",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write src/**/*.ts"
+  },
+  "dependencies": {
+    "@types/pdf-parse": "^1.1.5",
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "commander": "^14.0.0",
+    "mime-types": "^2.1.35",
+    "pdf-parse": "^1.1.1",
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.3",
+    "@types/mime-types": "^2.1.4",
+    "@types/node": "^20.0.0",
+    "@types/turndown": "^5.0.4",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "markdown",
+    "converter",
+    "html",
+    "youtube",
+    "wikipedia",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT"
+}
