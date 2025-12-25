@@ -163,7 +163,7 @@ interface DocumentConverterResult {
 ## Command Line Interface
 
 ```bash
-markdown-converter <source> [options]
+anything-to-markdown <source> [options]
 
 Arguments:
   source                    File path or URL to convert

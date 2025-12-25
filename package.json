@@ -1,15 +1,36 @@
 {
-  "name": "markdown-converter-ts",
+  "name": "anything-to-markdown",
   "version": "1.0.0",
-  "description": "TypeScript port of markdown converter for text, HTML, YouTube and Wikipedia content",
-  "main": "dist/index.js",
+  "description": "Convert files and web pages into clean Markdown (HTML, PDF, YouTube, Wikipedia, text)",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "jest",
+    "prebuild": "node ./scripts/generate-version.js",
+    "build": "tsup",
+    "clean": "rimraf dist",
+    "dev": "tsup --watch",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --runInBand",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "cli": "node dist/cli.cjs",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "anything-to-markdown": "dist/cli.cjs"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "axios": "1.13.2",
@@ -31,9 +52,12 @@
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "tsup": "^6.6.0",
+    "rimraf": "^5.0.0"
   },
   "keywords": [
+    "anything-to-markdown",
     "markdown",
     "converter",
     "html",
@@ -41,6 +65,12 @@
     "wikipedia",
     "typescript"
   ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "",
   "license": "MIT"
 }

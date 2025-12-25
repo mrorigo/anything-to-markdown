@@ -2,6 +2,7 @@
 
 import { Command } from 'commander';
 import { promises as fs } from 'fs';
+import { VERSION } from './version';
 import { MarkdownConverter } from './markdown-converter';
 import { FileConversionException, UnsupportedFormatException } from './exceptions';
 
@@ -104,9 +105,9 @@ async function convertSource(source: string, options: CliOptions): Promise<void>
 }
 
 program
-  .name('markdown-converter')
+  .name('anything-to-markdown')
   .description('Convert documents and web pages to Markdown')
-  .version('1.0.0')
+  .version(VERSION)
   .argument('<source>', 'File path or URL to convert')
   .option('-o, --output <file>', 'Output file (default: stdout)')
   .option('-v, --verbose', 'Show verbose output')
@@ -119,11 +120,11 @@ program
 // Add examples to help
 program.addHelpText('after', `
 Examples:
-  $ markdown-converter document.pdf
-  $ markdown-converter https://en.wikipedia.org/wiki/TypeScript
-  $ markdown-converter document.html -o output.md
-  $ markdown-converter file.txt -e .html -v
-  $ markdown-converter https://www.youtube.com/watch?v=dQw4w9WgXcQ
+  $ anything-to-markdown document.pdf
+  $ anything-to-markdown https://en.wikipedia.org/wiki/TypeScript
+  $ anything-to-markdown document.html -o output.md
+  $ anything-to-markdown file.txt -e .html -v
+  $ anything-to-markdown https://www.youtube.com/watch?v=dQw4w9WgXcQ
 `);
 
 // Parse command line arguments
