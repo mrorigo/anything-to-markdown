@@ -172,15 +172,21 @@ Options:
   -o, --output <file>      Output file (default: stdout)
   -v, --verbose            Show verbose output
   -e, --extension <ext>    Force file extension (e.g., .html, .pdf)
+      --no-frontmatter     Do not include YAML frontmatter in output
   -h, --help               Display help information
   -V, --version            Display version number
 ```
 
+**Frontmatter**: By default the CLI will prepend a small YAML frontmatter block with metadata (title, url or source, file_extension, converted_at). Use `--no-frontmatter` to disable this behavior.
+
 ### CLI Examples
 
 ```bash
-# Basic conversion
+# Default (frontmatter included)
 node dist/cli.js document.pdf
+
+# Disable frontmatter
+node dist/cli.js document.pdf --no-frontmatter
 
 # Save to file
 node dist/cli.js https://en.wikipedia.org/wiki/Node.js -o nodejs.md
@@ -214,6 +220,14 @@ npm run test        # Run test suite
 npm run lint        # ESLint check
 npm run format      # Prettier formatting
 npm run cli         # Run CLI during development
+```
+
+A developer utility is included for quick PDF evaluation: `test-pdf.ts` (root of repo).
+
+Run it without building using ts-node:
+
+```bash
+npx ts-node test-pdf.ts <file-or-url> [-o out.md]
 ```
 
 ### Testing

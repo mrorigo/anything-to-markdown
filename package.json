@@ -12,13 +12,12 @@
     "format": "prettier --write src/**/*.ts"
   },
   "dependencies": {
-    "@types/pdf-parse": "^1.1.5",
-    "axios": "^1.6.0",
-    "cheerio": "^1.0.0-rc.12",
-    "commander": "^14.0.0",
-    "mime-types": "^2.1.35",
-    "pdf-parse": "^1.1.1",
-    "turndown": "^7.1.2"
+    "axios": "1.13.2",
+    "cheerio": "1.0.0-rc.12",
+    "commander": "14.0.0",
+    "mime-types": "2.1.35",
+    "pdf-parse": "2.4.5",
+    "turndown": "7.1.2"
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",

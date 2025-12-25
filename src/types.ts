@@ -2,6 +2,10 @@ import { AxiosResponse } from 'axios';
 
 export interface DocumentConverterResult {
   title: string | null;
+  pages?: number;
+  author?: string | null;
+  creator?: string | null;
+  producer?: string | null;
   textContent: string;
 }
 
