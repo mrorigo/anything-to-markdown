@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anything → Markdown — Neon Converter</title>
+  <meta name="description" content="Convert documents & web pages to Markdown — sleek CLI + TypeScript API. Cyberpunk-styled landing page." />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#05020b; --bg-2:#0a0120; --neon-pink:#ff2d95; --neon-cyan:#00f0ff; --neon-purple:#8b5cf6; --muted:#98a8bf; --glass:rgba(255,255,255,0.03);
+      --maxw:1200px; --radius:14px; --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:radial-gradient(1200px 600px at 10% 10%, rgba(139,92,246,0.08), transparent), linear-gradient(180deg,var(--bg-1), var(--bg-2));color:#e7f2ff;overflow-y:auto}
+
+    /* Subtle moving grid background */
+    body::before{content:"";position:fixed;left:0;top:0;right:0;bottom:0;background-image:repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 40px), repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 40px);opacity:0.06;pointer-events:none;mix-blend-mode:overlay;animation:pan 30s linear infinite}
+    @keyframes pan{from{transform:translateY(0)}to{transform:translateY(-100px)}}
+
+    .wrap{max-width:var(--maxw);margin:48px auto;padding:28px}
+
+    /* Layout */
+    .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:stretch}
+
+    /* Neon card */
+    .neon-card{position:relative;border-radius:var(--radius);padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6);overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+    .logo{display:flex;align-items:center;gap:14px}
+    .orb{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--neon-pink),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-family:Orbitron, monospace;color:white;font-weight:700;font-size:22px;box-shadow:0 6px 30px rgba(255,45,149,0.12);border:1px solid rgba(255,255,255,0.03)}
+
+    h1{font-family:Orbitron, monospace;margin:6px 0 6px;font-size:clamp(28px,4.8vw,44px);letter-spacing:0.5px;color:var(--neon-pink);text-shadow:0 2px 18px rgba(255,45,149,0.12),0 0 30px rgba(139,92,246,0.06)}
+    p.lead{margin:6px 0 18px;color:var(--muted);font-size:15px}
+
+    .hero-actions{display:flex;gap:12px;align-items:center}
+    .btn{background:linear-gradient(90deg,var(--neon-pink),var(--neon-purple));padding:10px 16px;border-radius:12px;border:none;color:#061121;font-weight:700;cursor:pointer;box-shadow:0 8px 30px rgba(139,92,246,0.18)}
+    .btn.ghost{background:transparent;color:var(--neon-cyan);border:1px solid rgba(0,240,255,0.08);box-shadow:none}
+    .pill{display:inline-block;background:rgba(255,255,255,0.03);padding:6px 12px;border-radius:999px;color:var(--muted)}
+
+    /* Neon features list */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .feature{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);color:#dff6ff}
+    .feature h4{margin:0 0 6px;color:var(--neon-cyan)}
+    .feature p{margin:0;color:var(--muted);font-size:13px}
+
+    /* Right column - panels */
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.006));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .code{background:linear-gradient(90deg, rgba(0,0,0,0.35), rgba(255,255,255,0.02));padding:14px;border-radius:10px;color:#cde9ff;font-family:var(--mono);overflow:auto;border:1px solid rgba(0,255,255,0.06);white-space:pre;overflow-x:auto;font-size:13px;line-height:1.6;word-break:normal}
+
+    /* Animated accent lines */
+    .accent-lines{position:absolute;right:-80px;top:-30px;width:320px;height:320px;pointer-events:none;mix-blend-mode:screen;filter:blur(22px)}
+    .accent-lines::before{content:"";position:absolute;left:40px;top:40px;width:220px;height:220px;background:conic-gradient(from 90deg at 50% 50%, rgba(255,45,149,0.12), rgba(139,92,246,0.08), rgba(0,240,255,0.08));transform:rotate(40deg)}
+
+    /* Footer */
+    footer{margin:36px 0 12px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* Small screens */
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.features{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:640px){.features{grid-template-columns:1fr}}
+
+    /* Glowing hover */
+    .glow-hover:hover{box-shadow:0 20px 60px rgba(139,92,246,0.14);transform:translateY(-4px);transition:all .18s ease}
+
+    /* Neon flicker animation */
+    @keyframes flicker{0%{opacity:1}50%{opacity:.85}100%{opacity:1}}
+    .flicker{animation:flicker 3.2s infinite}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="grid">
+      <div class="neon-card">
+        <div class="logo">
+          <div>
+            <h1 class="flicker">Anything → Markdown</h1>
+            <p class="lead">Synthesize clean Markdown from messy inputs: HTML, PDFs, YouTube pages, Wikipedia, and plaintext — with a tiny, powerful CLI and TypeScript API.</p>
+            <div class="hero-actions">
+              <button class="btn" id="copyInstall">Install</button>
+              <span class="pill">TypeScript • Node 18+</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="features" style="margin-top:20px">
+          <div class="feature glow-hover"><h4>Smart HTML → MD</h4><p>Sanitizes and converts with semantic headings and links preserved.</p></div>
+          <div class="feature glow-hover"><h4>Reliable PDF Text</h4><p>Extracts metadata and full text while respecting PDF structure.</p></div>
+          <div class="feature glow-hover"><h4>Extensible</h4><p>Add converters for new formats or websites through a simple interface.</p></div>
+        </div>
+
+        <div style="margin-top:18px;display:flex;gap:10px;align-items:center">
+          <div class="pill">Open Source</div>
+          <a class="pill" href="https://github.com/your-org/anything-to-markdown" target="_blank" rel="noopener">Contribute on GitHub</a>
+        </div>
+
+        <div class="accent-lines" aria-hidden="true"></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="panel">
+          <h3 style="margin:0 0 8px;font-family:Orbitron, monospace;color:var(--neon-cyan)">Quick examples</h3>
+          <pre class="code" id="quickCode"><code>// CLI
+npx anything-to-markdown https://en.wikipedia.org/wiki/TypeScript -o out.md
+
+// Programmatic
+import { MarkdownConverter } from 'anything-to-markdown';
+const c = new MarkdownConverter();
+const r = await c.convert('doc.pdf');
+console.log(r.textContent);</code></pre>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div style="font-size:13px;color:var(--muted)">Install</div>
+            <div style="font-size:13px;color:var(--muted)">Version: <strong id="pkgVer">1.0.0</strong></div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="installInput" class="code" style="padding:8px;border-radius:8px;flex:1" value="npm i anything-to-markdown@1.0.0">
+            <button class="btn" id="copyBtn">Copy</button>
+          </div>
+        </div>
+
+        <div class="panel" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+          <div style="color:var(--muted)">License: MIT</div>
+          <a class="btn ghost" href="https://www.npmjs.com/package/anything-to-markdown" target="_blank">View on npm</a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div>Built in TypeScript • Tested with Jest • Bundled with tsup</div>
+    </footer>
+  </div>
+
+  <script>
+    // Interactive bits: copy install, update version if available
+    const copyBtn = document.getElementById('copyBtn');
+    const installInput = document.getElementById('installInput');
+    const pkgVerEl = document.getElementById('pkgVer');
+    const copyInstall = document.getElementById('copyInstall');
+
+    async function copyText(text, btn){
+      try{ await navigator.clipboard.writeText(text); btn.textContent = 'Copied ✓'; setTimeout(()=>btn.textContent='Copy',1400);}catch(e){alert('Copy failed — select and copy manually');}
+    }
+
+    copyBtn.addEventListener('click', ()=>copyText(installInput.value, copyBtn));
+    copyInstall.addEventListener('click', ()=>{installInput.select();copyText(installInput.value, copyInstall)});
+
+    (async ()=>{
+      try{
+        const r = await fetch('/package.json'); if(!r.ok) throw 0; const pkg = await r.json(); const v = pkg.version||'1.0.0';
+        pkgVerEl.textContent = v; installInput.value = `npm i anything-to-markdown@${v}`;
+      }catch(e){/* hosted static sites may not expose package.json */}
+    })();
+
+    // tiny animated stars
+    (function createStars(){
+      const root = document.querySelector('.neon-card');
+      if(!root) return;
+      for(let i=0;i<8;i++){const s = document.createElement('div'); s.style.position='absolute'; s.style.width='6px'; s.style.height='6px'; s.style.borderRadius='50%'; s.style.background=['var(--neon-pink)','var(--neon-cyan)','var(--neon-purple)'][i%3]; s.style.opacity='0.08'; s.style.left=(10+i*9)+'%'; s.style.top=(8+i*6)+'%'; s.style.transform='translateZ(0)'; s.style.boxShadow=`0 0 20px ${s.style.background}`; root.appendChild(s)}
+    })();
+  </script>
+</body>
+</html>
